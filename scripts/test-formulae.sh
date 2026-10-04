@@ -20,5 +20,5 @@ for formula in cli emulator; do
   else
     brew install --build-from-source --skip-link "androperator/tap/$formula"
   fi
-  brew test "androperator/tap/$formula"
+  brew test --force "androperator/tap/$formula"
 done

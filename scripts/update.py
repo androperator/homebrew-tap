@@ -48,6 +48,9 @@ def validate(package, command, entrypoint, metadata, archive):
 
 
 def formula(name, package, command, entrypoint, description, homepage, version, url, checksum):
+    help_test = ('assert JSON.parse(shell_output("#{bin}/androperator-emulator --help"))["data"]["commands"].key?("inspect")'
+                 if name == 'emulator' else
+                 'assert_match "Androperator", shell_output("#{bin}/androperator --help")')
     return f'''class {name.capitalize()} < Formula
   desc "{description}"
   homepage "{homepage}"
@@ -69,10 +72,22 @@ def formula(name, package, command, entrypoint, description, homepage, version, 
 
   test do
     assert_match "{version}", shell_output("#{{bin}}/{command} --version")
-    assert_match "{command if name == 'emulator' else 'Androperator'}", shell_output("#{{bin}}/{command} --help")
+    {help_test}
   end
 end
 '''
+
+
+def check_existing(existing, version, checksum):
+    current_version = re.search(r'^  version "(\d+\.\d+\.\d+)"$', existing, re.MULTILINE)
+    current_checksum = re.search(r'^  sha256 "([0-9a-f]{64})"$', existing, re.MULTILINE)
+    if current_version is None or current_checksum is None:
+        raise ValueError('Existing formula has invalid release metadata')
+    previous = current_version.group(1)
+    if tuple(map(int, version.split('.'))) < tuple(map(int, previous.split('.'))):
+        raise ValueError('Refusing to downgrade an existing formula')
+    if version == previous and checksum != current_checksum.group(1):
+        raise ValueError('Existing npm version has a different archive checksum')
 
 
 def main():
@@ -85,6 +100,9 @@ def main():
             raise ValueError('Archive must be served by the npm registry over HTTPS')
         archive = download(url)
         version, url, checksum = validate(package, command, entrypoint, metadata, archive)
+        existing = ROOT / 'Formula' / f'{name}.rb'
+        if existing.exists():
+            check_existing(existing.read_text(), version, checksum)
         outputs[name] = formula(name, package, command, entrypoint, description, homepage, version, url, checksum)
         print(f'{name}: verified {package}@{version}')
     for name, content in outputs.items():
