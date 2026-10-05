@@ -49,3 +49,14 @@ class UpdateTests(unittest.TestCase):
         metadata, content = fixture()
         with self.assertRaises(ValueError):
             update.validate('@androperator/cli', 'unexpected-command', 'dist/cli/index.js', metadata, content)
+
+
+    def test_existing_versions_cannot_be_downgraded_or_replaced(self):
+        existing = '  version "1.1.0"\n  sha256 "' + 'a' * 64 + '"\n'
+        update.check_existing(existing, '1.1.0', 'a' * 64)
+        update.check_existing(existing, '1.2.0', 'b' * 64)
+        for version, checksum in [('1.0.9', 'a' * 64), ('1.1.0', 'b' * 64)]:
+            with self.subTest(version=version), self.assertRaises(ValueError):
+                update.check_existing(existing, version, checksum)
+        with self.assertRaises(ValueError):
+            update.check_existing('', '1.1.0', 'a' * 64)

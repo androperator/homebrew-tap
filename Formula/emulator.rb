@@ -19,6 +19,6 @@ class Emulator < Formula
 
   test do
     assert_match "0.1.1", shell_output("#{bin}/androperator-emulator --version")
-    assert_match "androperator-emulator", shell_output("#{bin}/androperator-emulator --help")
+    assert JSON.parse(shell_output("#{bin}/androperator-emulator --help"))["data"]["commands"].key?("inspect")
   end
 end

@@ -12,13 +12,25 @@ else
   mkdir -p "$(dirname "$tap_path")"
   ln -s "$root" "$tap_path"
 fi
+# Reinstall preserves link state. Refuse linked installations before any mutation.
+for formula in cli emulator; do
+  if brew list --versions "androperator/tap/$formula" >/dev/null 2>&1; then
+    if ! brew info --json=v2 "androperator/tap/$formula" | python3 -c '
+import json, sys
+sys.exit(bool(json.load(sys.stdin)["formulae"][0]["linked_keg"]))
+'; then
+      echo "Refusing to test linked androperator/tap/$formula; use a separate test host." >&2
+      exit 1
+    fi
+  fi
+done
 for formula in cli emulator; do
   ruby -c "$root/Formula/$formula.rb"
   # Reinstall so tests exercise the candidate formula, even when its version is unchanged.
   if brew list --versions "androperator/tap/$formula" >/dev/null 2>&1; then
-    brew reinstall --build-from-source --skip-link "androperator/tap/$formula"
+    brew reinstall --build-from-source "androperator/tap/$formula"
   else
     brew install --build-from-source --skip-link "androperator/tap/$formula"
   fi
-  brew test "androperator/tap/$formula"
+  brew test --force "androperator/tap/$formula"
 done
