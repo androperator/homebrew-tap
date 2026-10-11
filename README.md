@@ -32,7 +32,8 @@ Do not use `npm install -g` to upgrade a Homebrew installation.
 device and emulator tasks. The cask installs the signed and notarized universal
 app from GitHub Releases on macOS 14 or newer, on Apple silicon or Intel Macs.
 Android SDK tools are configured separately. Emulator creation and deletion also
-require Node.js 24+, which the cask does not install automatically.
+require Node.js 24+; emulator appearance tweaks require Node.js 22+. The cask
+does not install Node automatically.
 
 Upgrade with `brew upgrade --cask androperator/tap/adbuddy` and uninstall with
 `brew uninstall --cask androperator/tap/adbuddy`. Uninstalling retains saved
