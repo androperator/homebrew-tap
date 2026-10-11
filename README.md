@@ -1,8 +1,9 @@
 # Androperator for Homebrew
 
-Install the Android automation CLI or the standalone emulator command:
+Install the ADBuddy macOS app, Android automation CLI, or standalone emulator command:
 
 ```sh
+brew install --cask androperator/tap/adbuddy
 brew install androperator/tap/cli
 brew install androperator/tap/emulator
 ```
@@ -24,6 +25,25 @@ npm uninstall -g @androperator/emulator
 
 Upgrade with `brew upgrade androperator/tap/cli androperator/tap/emulator`.
 Do not use `npm install -g` to upgrade a Homebrew installation.
+
+## ADBuddy
+
+[ADBuddy](https://github.com/androperator/adbuddy) is a native macOS app for Android
+device and emulator tasks. The cask installs the signed and notarized universal
+app from GitHub Releases on macOS 14 or newer, on Apple silicon or Intel Macs.
+Android SDK tools are configured separately. Emulator creation and deletion also
+require Node.js 24+, which the cask does not install automatically.
+
+Upgrade with `brew upgrade --cask androperator/tap/adbuddy` and uninstall with
+`brew uninstall --cask androperator/tap/adbuddy`. Uninstalling retains saved
+preferences and captures. Adding `--zap` removes the legacy shared preferences
+file, `com.clawperator.adbuddy.plist`; screenshots and recordings are retained.
+The app's bundle identifier is `com.androperator.adbuddy`, while the original
+preferences domain is kept so upgrades preserve settings shared with its MCP helper.
+
+For each ADBuddy release, update `Casks/adbuddy.rb` only after its GitHub Release
+ZIP is published. Set the version and SHA-256 of the universal ZIP, then validate
+the cask. The npm updater below does not update the ADBuddy cask.
 
 ## Automatic updates
 
