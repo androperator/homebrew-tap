@@ -1,6 +1,6 @@
 cask "adbuddy" do
-  version "1.0.0"
-  sha256 "95363f2de0e159ff71d120498c531dafa2e4663e07ad6ea51b74d4b0e5f63595"
+  version "1.0.1"
+  sha256 "8b88712e8b2ba173dbeca4552cd002f67dbba5471e2b25b96dff430178475601"
 
   url "https://github.com/androperator/adbuddy/releases/download/v#{version}/ADBuddy-macos-universal-#{version}.zip"
   name "ADBuddy"
