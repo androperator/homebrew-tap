@@ -1,8 +1,8 @@
 cask "adbuddy" do
-  version "1.0.0"
-  sha256 "95363f2de0e159ff71d120498c531dafa2e4663e07ad6ea51b74d4b0e5f63595"
+  version "1.0.2"
+  sha256 "96f815f194442da75e13432b5ee84804da3e10cf30e492961611f8dea4140162"
 
-  url "https://github.com/androperator/adbuddy/releases/download/v#{version}/ADBuddy-macos-universal-#{version}.zip"
+  url "https://github.com/androperator/ADBuddy/releases/download/v#{version}/ADBuddy-macos-universal-#{version}.zip"
   name "ADBuddy"
   desc "Android device and emulator developer tools"
   homepage "https://github.com/androperator/adbuddy"
